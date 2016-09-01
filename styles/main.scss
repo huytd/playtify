@@ -193,6 +193,8 @@ html, body {
             clear: both;
             font-size: 14px;
             font-style: normal;
+            text-overflow: ellipsis;
+            overflow: hidden;
           }
         }
       }
