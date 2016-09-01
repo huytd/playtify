@@ -95,6 +95,10 @@ html, body {
         &:hover {
           text-shadow: 0 0 10px #FFF;
         }
+
+        &.disabled {
+          opacity: 0.3;
+        }
       }
 
       .timeStatus {

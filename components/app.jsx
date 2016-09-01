@@ -15,6 +15,7 @@ class App extends React.Component {
       currentSong: 0,
       searchList: [],
       songList: savedSongs || [],
+      shuffleArray: [],
       isShuffle: false
     }
   }
@@ -43,6 +44,11 @@ class App extends React.Component {
     let self = this;
     musicPlayer.play();
     self.setState({ isPlaying: true });
+  }
+
+  toggleShuffle() {
+    let self = this;
+    self.setState({ isShuffle: !self.state.isShuffle });
   }
 
   nextSong(direction = 1) {
@@ -215,6 +221,7 @@ class App extends React.Component {
               <div className="timeStatus">02:02</div>
               <button className="playerControlBtn entypo-fast-backward" onClick={self.prevSong.bind(self)}></button>
               <button className="playerControlBtn entypo-fast-forward" onClick={self.nextSong.bind(self, 1)}></button>
+              <button className={self.state.isShuffle?"playerControlBtn entypo-shuffle":"playerControlBtn entypo-shuffle disabled"} onClick={self.toggleShuffle.bind(self)}></button>
             </div>
           </div>
         </div>
