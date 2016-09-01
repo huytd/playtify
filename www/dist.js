@@ -21499,22 +21499,29 @@
 	      musicPlayer = new Audio(url);
 	      musicPlayer.play();
 	      musicPlayer.addEventListener('timeupdate', self.timeUpdate.bind(self));
+	      self.setState({ isPlaying: true });
 	    }
 	  }, {
 	    key: 'pauseSong',
 	    value: function pauseSong() {
+	      var self = this;
 	      if (musicPlayer) {
 	        musicPlayer.pause();
+	        self.setState({ isPlaying: false });
 	      }
 	    }
 	  }, {
 	    key: 'resumeSong',
 	    value: function resumeSong() {
+	      var self = this;
 	      musicPlayer.play();
+	      self.setState({ isPlaying: true });
 	    }
 	  }, {
 	    key: 'nextSong',
 	    value: function nextSong() {
+	      var direction = arguments.length <= 0 || arguments[0] === undefined ? 1 : arguments[0];
+
 	      var self = this;
 	      var songIdx = self.state.currentSong;
 	      if (self.state.isShuffle) {
@@ -21529,20 +21536,29 @@
 	        newShuffleArray.splice(ridx, 1);
 	        self.setState({ shuffleArray: newShuffleArray });
 	      } else {
-	        songIdx += 1;
+	        songIdx += direction;
 	        if (songIdx >= self.state.songList.length) {
 	          songIdx = 0;
+	        }
+	        if (songIdx <= 0) {
+	          songIdx = self.state.songList.length - 1;
 	        }
 	      }
 	      self.onPlayClick(songIdx);
 	    }
 	  }, {
+	    key: 'prevSong',
+	    value: function prevSong() {
+	      var self = this;
+	      self.nextSong(-1);
+	    }
+	  }, {
 	    key: 'onPlayClick',
 	    value: function onPlayClick(idx) {
 	      var self = this;
-	      var song = self.state.songList[idx].url;
-	      console.log('clicked: ', song);
-	      fetch('/stream?url=' + song).then(function (response) {
+	      var song = self.state.songList[idx];
+	      document.title = 'Playing: ' + song.name + ' - ' + song.artist;
+	      fetch('/stream?url=' + song.url).then(function (response) {
 	        return response.json();
 	      }).then(function (data) {
 	        console.log('Song URL: ', data.url);
@@ -21703,7 +21719,7 @@
 	                    return _react2.default.createElement(
 	                      'li',
 	                      { key: 'song-' + songIndex, className: self.state.currentSong == songIndex ? 'active' : '' },
-	                      _react2.default.createElement('button', { className: 'iconBtn entypo-play', onClick: self.onPlayClick.bind(self, songIndex) }),
+	                      _react2.default.createElement('button', { className: self.state.currentSong == songIndex && self.state.isPlaying ? "iconBtn entypo-pause" : "iconBtn entypo-play", onClick: self.onPlayClick.bind(self, songIndex) }),
 	                      _react2.default.createElement(
 	                        'div',
 	                        { className: 'songName' },
@@ -21724,7 +21740,7 @@
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'player' },
-	            _react2.default.createElement('button', { className: 'playerControlBtn entypo-play' }),
+	            _react2.default.createElement('button', { className: self.state.isPlaying ? "playerControlBtn entypo-pause" : "playerControlBtn entypo-play" }),
 	            _react2.default.createElement(
 	              'div',
 	              { className: 'progressBarRegion' },
@@ -21739,8 +21755,8 @@
 	              { className: 'timeStatus' },
 	              '02:02'
 	            ),
-	            _react2.default.createElement('button', { className: 'playerControlBtn entypo-fast-backward' }),
-	            _react2.default.createElement('button', { className: 'playerControlBtn entypo-fast-forward' })
+	            _react2.default.createElement('button', { className: 'playerControlBtn entypo-fast-backward', onClick: self.prevSong.bind(self) }),
+	            _react2.default.createElement('button', { className: 'playerControlBtn entypo-fast-forward', onClick: self.nextSong.bind(self) })
 	          )
 	        )
 	      );

@@ -28,19 +28,24 @@ class App extends React.Component {
     musicPlayer = new Audio(url);
     musicPlayer.play();
     musicPlayer.addEventListener('timeupdate', self.timeUpdate.bind(self));
+    self.setState({ isPlaying: true });
   }
   
   pauseSong() {
+    let self = this;
     if (musicPlayer) {
       musicPlayer.pause()
+      self.setState({ isPlaying: false });
     }
   }
 
   resumeSong() {
-    musicPlayer.play()
+    let self = this;
+    musicPlayer.play();
+    self.setState({ isPlaying: true });
   }
 
-  nextSong() {
+  nextSong(direction = 1) {
     let self = this;
     let songIdx = self.state.currentSong;
     if (self.state.isShuffle) {
@@ -53,19 +58,27 @@ class App extends React.Component {
       newShuffleArray.splice(ridx, 1);
       self.setState({ shuffleArray: newShuffleArray });
     } else {
-      songIdx += 1;
+      songIdx += direction;
       if (songIdx >= self.state.songList.length) {
         songIdx = 0;
+      }
+      if (songIdx <= 0) {
+        songIdx = self.state.songList.length - 1;
       }
     }
     self.onPlayClick(songIdx);
   }
 
+  prevSong() {
+    let self = this;
+    self.nextSong(-1);
+  }
+
   onPlayClick(idx) {
     let self = this;
-    let song = self.state.songList[idx].url;
-    console.log('clicked: ', song);
-    fetch('/stream?url=' + song)
+    let song = self.state.songList[idx];
+    document.title = 'Playing: ' + song.name + ' - ' + song.artist;
+    fetch('/stream?url=' + song.url)
     .then((response) => {
       return response.json()
     })
@@ -179,7 +192,7 @@ class App extends React.Component {
                     {self.state.songList.map((songItem, songIndex) => {
                       return (
                         <li key={`song-${songIndex}`} className={(self.state.currentSong == songIndex)?'active':''}>
-                          <button className="iconBtn entypo-play" onClick={self.onPlayClick.bind(self, songIndex)}></button>
+                          <button className={((self.state.currentSong == songIndex) && self.state.isPlaying)?"iconBtn entypo-pause":"iconBtn entypo-play"} onClick={self.onPlayClick.bind(self, songIndex)}></button>
                           <div className="songName">
                             {songItem.name}
                             <span>{songItem.artist}</span>
@@ -193,15 +206,15 @@ class App extends React.Component {
               </div>
             </div>
             <div className="player">
-              <button className="playerControlBtn entypo-play"></button>
+              <button className={self.state.isPlaying?"playerControlBtn entypo-pause":"playerControlBtn entypo-play"}></button>
               <div className="progressBarRegion">
                 <div className="progressBar">
                   <span className="progress" style={durationStyle}></span>
                 </div>
               </div>
               <div className="timeStatus">02:02</div>
-              <button className="playerControlBtn entypo-fast-backward"></button>
-              <button className="playerControlBtn entypo-fast-forward"></button>
+              <button className="playerControlBtn entypo-fast-backward" onClick={self.prevSong.bind(self)}></button>
+              <button className="playerControlBtn entypo-fast-forward" onClick={self.nextSong.bind(self)}></button>
             </div>
           </div>
         </div>
