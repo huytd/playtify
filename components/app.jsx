@@ -14,24 +14,65 @@ class App extends React.Component {
       isPlaying: false,
       currentSong: 0,
       searchList: [],
-      songList: savedSongs || []
+      songList: savedSongs || [],
+      isShuffle: false
     }
   }
 
-  onPlayClick(url) {
+  playSong(url) {
     let self = this;
-    console.log('Requesting: ', url);
-    fetch("/stream?url=" + url).then((response) => {
-      return response.json()
-    }).then((data) => {
-      if (musicPlayer) {
-        console.log(musicPlayer);
-        musicPlayer.pause();
-        musicPlayer.removeEventListener('timeupdate', self.timeUpdate.bind(this));
+    if (musicPlayer) {
+      musicPlayer.removeEventListener('timeupdate', self.timeUpdate.bind(self));
+      musicPlayer.pause()
+    }
+    musicPlayer = new Audio(url);
+    musicPlayer.play();
+    musicPlayer.addEventListener('timeupdate', self.timeUpdate.bind(self));
+  }
+  
+  pauseSong() {
+    if (musicPlayer) {
+      musicPlayer.pause()
+    }
+  }
+
+  resumeSong() {
+    musicPlayer.play()
+  }
+
+  nextSong() {
+    let self = this;
+    let songIdx = self.state.currentSong;
+    if (self.state.isShuffle) {
+      if (self.state.shuffleArray.length == 0) {
+        self.state.shuffleArray = self.state.songList.map((s, i) => { return i; });
       }
-      musicPlayer = new Audio(data.url);
-      musicPlayer.play();
-      musicPlayer.addEventListener('timeupdate', self.timeUpdate.bind(this));
+      let ridx = Math.floor(Math.random() * (self.state.shuffleArray.length - 1));
+      songIdx = self.state.shuffleArray[ridx];
+      let newShuffleArray = self.state.shuffleArray;
+      newShuffleArray.splice(ridx, 1);
+      self.setState({ shuffleArray: newShuffleArray });
+    } else {
+      songIdx += 1;
+      if (songIdx >= self.state.songList.length) {
+        songIdx = 0;
+      }
+    }
+    self.onPlayClick(songIdx);
+  }
+
+  onPlayClick(idx) {
+    let self = this;
+    let song = self.state.songList[idx].url;
+    console.log('clicked: ', song);
+    fetch('/stream?url=' + song)
+    .then((response) => {
+      return response.json()
+    })
+    .then((data) => {
+      console.log('Song URL: ', data.url);
+      self.playSong(data.url);
+      self.setState({ currentSong: idx });
     });
   }
 
@@ -41,10 +82,14 @@ class App extends React.Component {
   }
 
   timeUpdate(event) {
+    let self = this;
     console.log('Time: ', musicPlayer.currentTime, '/', musicPlayer.duration);
     let percent = musicPlayer.currentTime / musicPlayer.duration * 100;
     console.log('Percent: ', percent);
-    this.setState({ songTime: percent });
+    self.setState({ songTime: percent });
+    if (percent >= 100) {
+      self.nextSong();
+    }
   }
 
   doSearch(term) {
@@ -83,7 +128,9 @@ class App extends React.Component {
     newSongList.splice(index, 1);
     self.setState({ songList: newSongList });
     window.localStorage.setItem('songList', JSON.stringify(newSongList));
-    // remember to check for now playing song
+    if (self.state.currentSong == index) {
+      self.nextSong();
+    }
   }
 
   render() {
@@ -131,8 +178,8 @@ class App extends React.Component {
                   <ul className="songList">
                     {self.state.songList.map((songItem, songIndex) => {
                       return (
-                        <li key={`song-${songIndex}`}>
-                          <button className="iconBtn entypo-play" onClick={self.onPlayClick.bind(self, songItem.url)}></button>
+                        <li key={`song-${songIndex}`} className={(self.state.currentSong == songIndex)?'active':''}>
+                          <button className="iconBtn entypo-play" onClick={self.onPlayClick.bind(self, songIndex)}></button>
                           <div className="songName">
                             {songItem.name}
                             <span>{songItem.artist}</span>
