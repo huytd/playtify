@@ -8,11 +8,28 @@
 
 $background-blur: 20px;
 $album-color: #EEE;
-$album-cover: url(https://d13yacurqjgara.cloudfront.net/users/41854/screenshots/1835511/matmi-social.png);
+//$album-cover: url(https://d13yacurqjgara.cloudfront.net/users/41854/screenshots/1835511/matmi-social.png);
+$album-cover: url(http://hdwallpaperbackgrounds.net/wp-content/uploads/2016/08/cool-white-background.jpg);
 
 * {
   font-family: 'PT Sans Narrow', sans-serif;
   outline: none;
+}
+
+.iconBtn {
+  width: 40px; height: 40px;
+  background: none;
+  font-weight: normal;
+  border-radius: 20px;
+  border: 2px solid #FFF;
+  margin: 20px 10px 20px 20px;
+  font-size: 30px;
+  color: #FFF;
+  cursor: pointer;
+
+  &:hover {
+    text-shadow: 0 0 10px #FFF;
+  }
 }
 
 html, body {
@@ -125,13 +142,60 @@ html, body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+
+    .searchBox {
+      flex-basis: 50px;
+      display: flex;
+      flex-direction: column;
+
+      input {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.3);
+        color: #FFF;
+        padding: 5px;
+        border: none;
+        font-size: 20px;
+      }
+    }
     
-    .lyrics {
+    .searchList {
       flex: 1;
       color: #FFF;
       text-align: center;
       overflow: auto;
+      margin: 0; padding: 5px;
       margin-right: -17px;
+      list-style: none;
+      
+      li {
+        display: flex;
+        flex-direction: row;
+        height: 60px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        opacity: 1;
+
+        button {
+          margin: 10px;
+          flex-basis: 40px;
+          font-size: 20px;
+        }
+
+        .songName {
+          flex: 1;
+          font-size: 18px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          text-align: left;
+
+          span {
+            display: block;
+            clear: both;
+            font-size: 14px;
+            font-style: normal;
+          }
+        }
+      }
     }
   }
 
@@ -140,24 +204,7 @@ html, body {
     background: rgba(50, 50, 50, 0.3);
     display: flex; flex-direction: column;
     color: #FFF;
-    padding: 15px;
-
-    .iconBtn {
-      width: 40px; height: 40px;
-      background: none;
-      font-weight: normal;
-      border-radius: 20px;
-      border: 2px solid #FFF;
-      margin: 20px 10px 20px 20px;
-      font-size: 30px;
-      color: #FFF;
-      cursor: pointer;
-
-      &:hover {
-        text-shadow: 0 0 10px #FFF;
-      }
-
-    }
+    padding: 15px; 
 
     .playListNavigator {
       flex-basis: 30px;
@@ -228,12 +275,18 @@ html, body {
           display: flex;
           flex-direction: column;
           justify-content: center;
+          position: relative;
 
           span {
             display: block;
             clear: both;
             font-size: 14px;
             font-style: normal;
+          }
+
+          button {
+            position: absolute;
+            top: 0; right: 10px;
           }
         }
       }

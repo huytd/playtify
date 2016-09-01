@@ -187,25 +187,40 @@
 	var cachedSetTimeout;
 	var cachedClearTimeout;
 
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
 	(function () {
 	    try {
-	        cachedSetTimeout = setTimeout;
-	    } catch (e) {
-	        cachedSetTimeout = function () {
-	            throw new Error('setTimeout is not defined');
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
 	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
 	    }
 	    try {
-	        cachedClearTimeout = clearTimeout;
-	    } catch (e) {
-	        cachedClearTimeout = function () {
-	            throw new Error('clearTimeout is not defined');
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
 	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
 	    }
 	} ())
 	function runTimeout(fun) {
 	    if (cachedSetTimeout === setTimeout) {
 	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
 	        return setTimeout(fun, 0);
 	    }
 	    try {
@@ -226,6 +241,11 @@
 	function runClearTimeout(marker) {
 	    if (cachedClearTimeout === clearTimeout) {
 	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
 	        return clearTimeout(marker);
 	    }
 	    try {
@@ -21455,7 +21475,8 @@
 
 	    _this.state = {
 	      songTime: 0,
-	      isPlaying: false
+	      isPlaying: false,
+	      currentSong: 0
 	    };
 	    return _this;
 	  }
@@ -21513,111 +21534,26 @@
 	                { className: 'info' },
 	                _react2.default.createElement(
 	                  'div',
-	                  { className: 'lyrics' },
+	                  { className: 'searchBox' },
+	                  _react2.default.createElement('input', { type: 'text', placeholder: 'Search song here' })
+	                ),
+	                _react2.default.createElement(
+	                  'ul',
+	                  { className: 'searchList' },
 	                  _react2.default.createElement(
-	                    'p',
+	                    'li',
 	                    null,
-	                    'I wanna be the very best',
-	                    _react2.default.createElement('br', null),
-	                    'Like no one ever was',
-	                    _react2.default.createElement('br', null),
-	                    'To catch them is my real test',
-	                    _react2.default.createElement('br', null),
-	                    'To train them is my cause'
-	                  ),
-	                  _react2.default.createElement(
-	                    'p',
-	                    null,
-	                    'I will travel across the land',
-	                    _react2.default.createElement('br', null),
-	                    'Searching far and wide',
-	                    _react2.default.createElement('br', null),
-	                    'Each Pokemon to understand',
-	                    _react2.default.createElement('br', null),
-	                    'The power that\'s inside',
-	                    _react2.default.createElement('br', null),
-	                    'Pokemon, gotta catch \'em all',
-	                    _react2.default.createElement('br', null),
-	                    'Its you and me',
-	                    _react2.default.createElement('br', null),
-	                    'I know it\'s my destiny',
-	                    _react2.default.createElement('br', null),
-	                    'Pokemon, oh, you\'re my best friend',
-	                    _react2.default.createElement('br', null),
-	                    'In a world we must defend',
-	                    _react2.default.createElement('br', null),
-	                    'Pokemon, gotta catch \'em all',
-	                    _react2.default.createElement('br', null),
-	                    'A heart so true',
-	                    _react2.default.createElement('br', null),
-	                    'Our courage will pull us through1'
-	                  ),
-	                  _react2.default.createElement(
-	                    'p',
-	                    null,
-	                    'You teach me and I\'ll teach you',
-	                    _react2.default.createElement('br', null),
-	                    'Pokemon, gotta catch \'em all',
-	                    _react2.default.createElement('br', null),
-	                    'Gotta catch \'em all',
-	                    _react2.default.createElement('br', null),
-	                    'Yeah'
-	                  ),
-	                  _react2.default.createElement(
-	                    'p',
-	                    null,
-	                    'Every challenge along the way',
-	                    _react2.default.createElement('br', null),
-	                    'With courage I will face',
-	                    _react2.default.createElement('br', null),
-	                    'I will battle every day',
-	                    _react2.default.createElement('br', null),
-	                    'To claim my rightful place'
-	                  ),
-	                  _react2.default.createElement(
-	                    'p',
-	                    null,
-	                    'Come with me, the time is right',
-	                    _react2.default.createElement('br', null),
-	                    'There\'s no better team',
-	                    _react2.default.createElement('br', null),
-	                    'Arm in arm we\'ll win the fight',
-	                    _react2.default.createElement('br', null),
-	                    'It\'s always been our dream'
-	                  ),
-	                  _react2.default.createElement(
-	                    'p',
-	                    null,
-	                    'Pokemon, gotta catch \'em all',
-	                    _react2.default.createElement('br', null),
-	                    'Its you and me',
-	                    _react2.default.createElement('br', null),
-	                    'I know it\'s my destiny',
-	                    _react2.default.createElement('br', null),
-	                    'Pokemon, oh, you\'re my best friend',
-	                    _react2.default.createElement('br', null),
-	                    'In a world we must defend',
-	                    _react2.default.createElement('br', null),
-	                    'Pokemon, gotta catch \'em all',
-	                    _react2.default.createElement('br', null),
-	                    'A heart so true',
-	                    _react2.default.createElement('br', null),
-	                    'Our courage will pull us through'
-	                  ),
-	                  _react2.default.createElement(
-	                    'p',
-	                    null,
-	                    'You teach me and I\'ll teach you',
-	                    _react2.default.createElement('br', null),
-	                    'Pokemon, gotta catch \'em all',
-	                    _react2.default.createElement('br', null),
-	                    'Gotta catch \'em all',
-	                    _react2.default.createElement('br', null),
-	                    'Gotta catch \'em all',
-	                    _react2.default.createElement('br', null),
-	                    'Gotta catch \'em all',
-	                    _react2.default.createElement('br', null),
-	                    'Yeah'
+	                    _react2.default.createElement('button', { className: 'iconBtn entypo-plus' }),
+	                    _react2.default.createElement(
+	                      'div',
+	                      { className: 'songName' },
+	                      'Pokemon Theme Song',
+	                      _react2.default.createElement(
+	                        'span',
+	                        null,
+	                        'Jason Paige'
+	                      )
+	                    )
 	                  )
 	                )
 	              ),
@@ -21629,8 +21565,8 @@
 	                  { className: 'playListNavigator' },
 	                  _react2.default.createElement(
 	                    'span',
-	                    { className: 'entypo-left-open' },
-	                    ' Back to lists'
+	                    { className: 'entypo-note-beamed' },
+	                    ' Now Playing'
 	                  )
 	                ),
 	                _react2.default.createElement(
@@ -21651,11 +21587,7 @@
 	                      'Songs: 3'
 	                    )
 	                  ),
-	                  _react2.default.createElement(
-	                    'div',
-	                    { className: 'playListUtils' },
-	                    _react2.default.createElement('button', { className: 'iconBtn entypo-plus' })
-	                  )
+	                  _react2.default.createElement('div', { className: 'playListUtils' })
 	                ),
 	                _react2.default.createElement(
 	                  'ul',
@@ -21672,7 +21604,8 @@
 	                        'span',
 	                        null,
 	                        'Jason Paige'
-	                      )
+	                      ),
+	                      _react2.default.createElement('button', { className: 'iconBtn entypo-cancel' })
 	                    )
 	                  ),
 	                  _react2.default.createElement(
@@ -21687,7 +21620,8 @@
 	                        'span',
 	                        null,
 	                        'Various Artist'
-	                      )
+	                      ),
+	                      _react2.default.createElement('button', { className: 'iconBtn entypo-cancel' })
 	                    )
 	                  ),
 	                  _react2.default.createElement(
@@ -21702,7 +21636,8 @@
 	                        'span',
 	                        null,
 	                        'Nintendo'
-	                      )
+	                      ),
+	                      _react2.default.createElement('button', { className: 'iconBtn entypo-cancel' })
 	                    )
 	                  )
 	                )
@@ -21776,7 +21711,7 @@
 	exports.push([module.id, "@import url(http://weloveiconfonts.com/api/?family=entypo);", ""]);
 
 	// module
-	exports.push([module.id, "/* entypo */\n[class*=\"entypo-\"]:before {\n  font-family: 'entypo', sans-serif; }\n\n* {\n  font-family: 'PT Sans Narrow', sans-serif;\n  outline: none; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  font-size: 18px;\n  background: url(https://d13yacurqjgara.cloudfront.net/users/41854/screenshots/1835511/matmi-social.png) center center no-repeat;\n  background-size: cover;\n  background-color: #EEE;\n  background-blend-mode: multiply; }\n\n.container {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  position: relative;\n  overflow: hidden; }\n  .container .background {\n    width: 100%;\n    height: 100%;\n    margin: 0;\n    padding: 0;\n    background: url(https://d13yacurqjgara.cloudfront.net/users/41854/screenshots/1835511/matmi-social.png) center center no-repeat;\n    background-size: cover;\n    background-color: #EEE;\n    background-blend-mode: multiply;\n    -webkit-filter: blur(20px);\n    -moz-filter: blur(20px);\n    -o-filter: blur(20px);\n    -ms-filter: blur(20px);\n    filter: blur(20px);\n    position: absolute;\n    top: 0;\n    left: 0;\n    z-index: 1; }\n  .container .main {\n    width: 100%;\n    height: 100%;\n    position: absolute;\n    top: 0;\n    left: 0;\n    z-index: 2;\n    display: flex;\n    flex-direction: column; }\n    .container .main .content {\n      flex: 1;\n      display: flex;\n      flex-direction: column; }\n    .container .main .player {\n      flex-basis: 60px;\n      background: rgba(255, 255, 255, 0.2);\n      display: flex;\n      flex-direction: row; }\n      .container .main .player .playerControlBtn {\n        flex-basis: 60px;\n        height: 60px;\n        background: none;\n        border: none;\n        cursor: pointer;\n        font-size: 30px;\n        color: #FFF; }\n        .container .main .player .playerControlBtn:hover {\n          text-shadow: 0 0 10px #FFF; }\n      .container .main .player .timeStatus {\n        flex-basis: 60px;\n        line-height: 60px;\n        font-size: 12px;\n        text-align: center;\n        color: #FFF; }\n      .container .main .player .progressBarRegion {\n        flex: 1;\n        position: relative; }\n        .container .main .player .progressBarRegion .progressBar {\n          width: 100%;\n          height: 2px;\n          background: rgba(255, 255, 255, 0.5);\n          position: absolute;\n          left: 0;\n          top: 28px;\n          border-raidus: 2px; }\n          .container .main .player .progressBarRegion .progressBar .progress {\n            width: 40%;\n            height: 2px;\n            background: #FFB300;\n            display: block;\n            position: absolute;\n            content: \".\";\n            text-indent: -999999;\n            box-shadow: 0 0 8px #FFC107; }\n\n.nowPlaying {\n  flex: 1;\n  display: flex;\n  flex-direction: row; }\n  .nowPlaying .info {\n    flex-basis: 420px;\n    overflow: hidden;\n    display: flex;\n    flex-direction: column; }\n    .nowPlaying .info .lyrics {\n      flex: 1;\n      color: #FFF;\n      text-align: center;\n      overflow: auto;\n      margin-right: -17px; }\n  .nowPlaying .playList {\n    flex: 1;\n    background: rgba(50, 50, 50, 0.3);\n    display: flex;\n    flex-direction: column;\n    color: #FFF;\n    padding: 15px; }\n    .nowPlaying .playList .iconBtn {\n      width: 40px;\n      height: 40px;\n      background: none;\n      font-weight: normal;\n      border-radius: 20px;\n      border: 2px solid #FFF;\n      margin: 20px 10px 20px 20px;\n      font-size: 30px;\n      color: #FFF;\n      cursor: pointer; }\n      .nowPlaying .playList .iconBtn:hover {\n        text-shadow: 0 0 10px #FFF; }\n    .nowPlaying .playList .playListNavigator {\n      flex-basis: 30px;\n      padding: 10px;\n      font-size: 18px; }\n      .nowPlaying .playList .playListNavigator span {\n        cursor: pointer; }\n        .nowPlaying .playList .playListNavigator span:hover {\n          text-shadow: 0 0 10px #FFF; }\n    .nowPlaying .playList .playlistHeader {\n      flex-basis: 80px;\n      display: flex;\n      flex-direction: row; }\n      .nowPlaying .playList .playlistHeader .playListUtils {\n        flex-basis: 80px;\n        text-align: right; }\n      .nowPlaying .playList .playlistHeader img {\n        flex-basis: 60px;\n        height: 60px;\n        margin: 10px; }\n      .nowPlaying .playList .playlistHeader .playListInfo {\n        flex: 1;\n        padding: 10px;\n        padding-left: 0; }\n        .nowPlaying .playList .playlistHeader .playListInfo h3 {\n          padding: 0;\n          margin: 0; }\n    .nowPlaying .playList .songList {\n      margin: 0;\n      padding: 0;\n      list-style: none; }\n      .nowPlaying .playList .songList li {\n        display: flex;\n        flex-direction: row;\n        height: 60px;\n        border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n        opacity: 0.8; }\n        .nowPlaying .playList .songList li.active {\n          opacity: 1;\n          background: rgba(255, 255, 255, 0.2); }\n        .nowPlaying .playList .songList li button {\n          margin: 10px;\n          flex-basis: 40px;\n          font-size: 20px; }\n        .nowPlaying .playList .songList li .songName {\n          flex: 1;\n          font-size: 18px;\n          display: flex;\n          flex-direction: column;\n          justify-content: center; }\n          .nowPlaying .playList .songList li .songName span {\n            display: block;\n            clear: both;\n            font-size: 14px;\n            font-style: normal; }\n", ""]);
+	exports.push([module.id, "/* entypo */\n[class*=\"entypo-\"]:before {\n  font-family: 'entypo', sans-serif; }\n\n* {\n  font-family: 'PT Sans Narrow', sans-serif;\n  outline: none; }\n\n.iconBtn {\n  width: 40px;\n  height: 40px;\n  background: none;\n  font-weight: normal;\n  border-radius: 20px;\n  border: 2px solid #FFF;\n  margin: 20px 10px 20px 20px;\n  font-size: 30px;\n  color: #FFF;\n  cursor: pointer; }\n  .iconBtn:hover {\n    text-shadow: 0 0 10px #FFF; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  font-size: 18px;\n  background: url(http://hdwallpaperbackgrounds.net/wp-content/uploads/2016/08/cool-white-background.jpg) center center no-repeat;\n  background-size: cover;\n  background-color: #EEE;\n  background-blend-mode: multiply; }\n\n.container {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  padding: 0;\n  position: relative;\n  overflow: hidden; }\n  .container .background {\n    width: 100%;\n    height: 100%;\n    margin: 0;\n    padding: 0;\n    background: url(http://hdwallpaperbackgrounds.net/wp-content/uploads/2016/08/cool-white-background.jpg) center center no-repeat;\n    background-size: cover;\n    background-color: #EEE;\n    background-blend-mode: multiply;\n    -webkit-filter: blur(20px);\n    -moz-filter: blur(20px);\n    -o-filter: blur(20px);\n    -ms-filter: blur(20px);\n    filter: blur(20px);\n    position: absolute;\n    top: 0;\n    left: 0;\n    z-index: 1; }\n  .container .main {\n    width: 100%;\n    height: 100%;\n    position: absolute;\n    top: 0;\n    left: 0;\n    z-index: 2;\n    display: flex;\n    flex-direction: column; }\n    .container .main .content {\n      flex: 1;\n      display: flex;\n      flex-direction: column; }\n    .container .main .player {\n      flex-basis: 60px;\n      background: rgba(255, 255, 255, 0.2);\n      display: flex;\n      flex-direction: row; }\n      .container .main .player .playerControlBtn {\n        flex-basis: 60px;\n        height: 60px;\n        background: none;\n        border: none;\n        cursor: pointer;\n        font-size: 30px;\n        color: #FFF; }\n        .container .main .player .playerControlBtn:hover {\n          text-shadow: 0 0 10px #FFF; }\n      .container .main .player .timeStatus {\n        flex-basis: 60px;\n        line-height: 60px;\n        font-size: 12px;\n        text-align: center;\n        color: #FFF; }\n      .container .main .player .progressBarRegion {\n        flex: 1;\n        position: relative; }\n        .container .main .player .progressBarRegion .progressBar {\n          width: 100%;\n          height: 2px;\n          background: rgba(255, 255, 255, 0.5);\n          position: absolute;\n          left: 0;\n          top: 28px;\n          border-raidus: 2px; }\n          .container .main .player .progressBarRegion .progressBar .progress {\n            width: 40%;\n            height: 2px;\n            background: #FFB300;\n            display: block;\n            position: absolute;\n            content: \".\";\n            text-indent: -999999;\n            box-shadow: 0 0 8px #FFC107; }\n\n.nowPlaying {\n  flex: 1;\n  display: flex;\n  flex-direction: row; }\n  .nowPlaying .info {\n    flex-basis: 420px;\n    overflow: hidden;\n    display: flex;\n    flex-direction: column; }\n    .nowPlaying .info .searchBox {\n      flex-basis: 50px;\n      display: flex;\n      flex-direction: column; }\n      .nowPlaying .info .searchBox input {\n        flex: 1;\n        background: rgba(255, 255, 255, 0.3);\n        color: #FFF;\n        padding: 5px;\n        border: none;\n        font-size: 20px; }\n    .nowPlaying .info .searchList {\n      flex: 1;\n      color: #FFF;\n      text-align: center;\n      overflow: auto;\n      margin: 0;\n      padding: 5px;\n      margin-right: -17px;\n      list-style: none; }\n      .nowPlaying .info .searchList li {\n        display: flex;\n        flex-direction: row;\n        height: 60px;\n        border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n        opacity: 1; }\n        .nowPlaying .info .searchList li button {\n          margin: 10px;\n          flex-basis: 40px;\n          font-size: 20px; }\n        .nowPlaying .info .searchList li .songName {\n          flex: 1;\n          font-size: 18px;\n          display: flex;\n          flex-direction: column;\n          justify-content: center;\n          text-align: left; }\n          .nowPlaying .info .searchList li .songName span {\n            display: block;\n            clear: both;\n            font-size: 14px;\n            font-style: normal; }\n  .nowPlaying .playList {\n    flex: 1;\n    background: rgba(50, 50, 50, 0.3);\n    display: flex;\n    flex-direction: column;\n    color: #FFF;\n    padding: 15px; }\n    .nowPlaying .playList .playListNavigator {\n      flex-basis: 30px;\n      padding: 10px;\n      font-size: 18px; }\n      .nowPlaying .playList .playListNavigator span {\n        cursor: pointer; }\n        .nowPlaying .playList .playListNavigator span:hover {\n          text-shadow: 0 0 10px #FFF; }\n    .nowPlaying .playList .playlistHeader {\n      flex-basis: 80px;\n      display: flex;\n      flex-direction: row; }\n      .nowPlaying .playList .playlistHeader .playListUtils {\n        flex-basis: 80px;\n        text-align: right; }\n      .nowPlaying .playList .playlistHeader img {\n        flex-basis: 60px;\n        height: 60px;\n        margin: 10px; }\n      .nowPlaying .playList .playlistHeader .playListInfo {\n        flex: 1;\n        padding: 10px;\n        padding-left: 0; }\n        .nowPlaying .playList .playlistHeader .playListInfo h3 {\n          padding: 0;\n          margin: 0; }\n    .nowPlaying .playList .songList {\n      margin: 0;\n      padding: 0;\n      list-style: none; }\n      .nowPlaying .playList .songList li {\n        display: flex;\n        flex-direction: row;\n        height: 60px;\n        border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n        opacity: 0.8; }\n        .nowPlaying .playList .songList li.active {\n          opacity: 1;\n          background: rgba(255, 255, 255, 0.2); }\n        .nowPlaying .playList .songList li button {\n          margin: 10px;\n          flex-basis: 40px;\n          font-size: 20px; }\n        .nowPlaying .playList .songList li .songName {\n          flex: 1;\n          font-size: 18px;\n          display: flex;\n          flex-direction: column;\n          justify-content: center;\n          position: relative; }\n          .nowPlaying .playList .songList li .songName span {\n            display: block;\n            clear: both;\n            font-size: 14px;\n            font-style: normal; }\n          .nowPlaying .playList .songList li .songName button {\n            position: absolute;\n            top: 0;\n            right: 10px; }\n", ""]);
 
 	// exports
 
