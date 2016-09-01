@@ -21569,8 +21569,15 @@
 	        return response.json();
 	      }).then(function (data) {
 	        console.log('Song URL: ', data.url);
-	        self.playSong(data.url);
-	        self.setState({ currentSong: idx });
+	        if (data.url != "ERR") {
+	          self.playSong(data.url);
+	          self.setState({ currentSong: idx });
+	        } else {
+	          self.nextSong();
+	        }
+	      }).catch(function (error) {
+	        console.log('ERROR: ', error);
+	        self.nextSong();
 	      });
 	    }
 	  }, {
