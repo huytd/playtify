@@ -16,7 +16,8 @@ class App extends React.Component {
       searchList: [],
       songList: savedSongs || [],
       shuffleArray: [],
-      isShuffle: false
+      isShuffle: false,
+      isSearchInProgress: false
     }
   }
 
@@ -121,12 +122,19 @@ class App extends React.Component {
 
   doSearch(term) {
     let self = this;
+    self.setState({ 
+      isSearchInProgress: true,
+      searchList: []
+    });
     fetch('/search?query=' + term)
     .then((response) => {
       return response.json()
     })
     .then((data) => { 
-      self.setState({ searchList: data.content })
+      self.setState({ 
+        isSearchInProgress: false,
+        searchList: data.content 
+      });
     });
   }
 
@@ -184,6 +192,7 @@ class App extends React.Component {
                   <div className="searchBox">
                     <input autoFocus type="text" placeholder="Search song here" onKeyPress={self.searchBoxKeyPress.bind(self)} />
                   </div>
+                  <div className={self.state.isSearchInProgress?"searchLoader":"searchLoader hide"}>Searching...</div>
                   <ul className="searchList">
                     {self.state.searchList.map((searchItem, searchIndex) => {
                       return (

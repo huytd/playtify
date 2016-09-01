@@ -176,6 +176,16 @@ html, body {
         color: rgba(255, 255, 255, 0.3);
       }
     }
+
+    .searchLoader {
+      padding: 10px;
+      text-align: left;
+      color: #FFF;
+
+      &.hide {
+        display: none;
+      }
+    }
     
     .searchList {
       flex: 1;
