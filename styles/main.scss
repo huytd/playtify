@@ -265,8 +265,11 @@ html, body {
     }
 
     .songList {
+      flex: 1;
       margin: 0; padding: 0;
       list-style: none;
+      overflow: auto;
+      margin-right: -17px;
 
       li {
         display: flex;
