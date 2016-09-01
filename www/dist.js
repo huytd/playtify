@@ -21756,7 +21756,7 @@
 	              '02:02'
 	            ),
 	            _react2.default.createElement('button', { className: 'playerControlBtn entypo-fast-backward', onClick: self.prevSong.bind(self) }),
-	            _react2.default.createElement('button', { className: 'playerControlBtn entypo-fast-forward', onClick: self.nextSong.bind(self) })
+	            _react2.default.createElement('button', { className: 'playerControlBtn entypo-fast-forward', onClick: self.nextSong.bind(self, 1) })
 	          )
 	        )
 	      );

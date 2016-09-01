@@ -214,7 +214,7 @@ class App extends React.Component {
               </div>
               <div className="timeStatus">02:02</div>
               <button className="playerControlBtn entypo-fast-backward" onClick={self.prevSong.bind(self)}></button>
-              <button className="playerControlBtn entypo-fast-forward" onClick={self.nextSong.bind(self)}></button>
+              <button className="playerControlBtn entypo-fast-forward" onClick={self.nextSong.bind(self, 1)}></button>
             </div>
           </div>
         </div>
