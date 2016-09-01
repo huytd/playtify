@@ -160,6 +160,15 @@ class App extends React.Component {
     }
   }
 
+  playerMainButtonClick() {
+    let self = this;
+    if (self.state.isPlaying) {
+      self.pauseSong();
+    } else {
+      self.resumeSong();
+    }
+  }
+
   render() {
     let self = this;
     let durationStyle = {
@@ -220,7 +229,7 @@ class App extends React.Component {
               </div>
             </div>
             <div className="player">
-              <button className={self.state.isPlaying?"playerControlBtn entypo-pause":"playerControlBtn entypo-play"}></button>
+              <button className={self.state.isPlaying?"playerControlBtn entypo-pause":"playerControlBtn entypo-play"} onClick={self.playerMainButtonClick.bind(self)}></button>
               <div className="progressBarRegion">
                 <div className="progressBar">
                   <span className="progress" style={durationStyle}></span>

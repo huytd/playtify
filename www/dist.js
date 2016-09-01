@@ -21642,6 +21642,16 @@
 	      }
 	    }
 	  }, {
+	    key: 'playerMainButtonClick',
+	    value: function playerMainButtonClick() {
+	      var self = this;
+	      if (self.state.isPlaying) {
+	        self.pauseSong();
+	      } else {
+	        self.resumeSong();
+	      }
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var self = this;
@@ -21754,7 +21764,7 @@
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'player' },
-	            _react2.default.createElement('button', { className: self.state.isPlaying ? "playerControlBtn entypo-pause" : "playerControlBtn entypo-play" }),
+	            _react2.default.createElement('button', { className: self.state.isPlaying ? "playerControlBtn entypo-pause" : "playerControlBtn entypo-play", onClick: self.playerMainButtonClick.bind(self) }),
 	            _react2.default.createElement(
 	              'div',
 	              { className: 'progressBarRegion' },
