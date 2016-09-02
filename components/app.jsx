@@ -13,7 +13,10 @@ class App extends React.Component {
       songTime: 0,
       isPlaying: false,
       currentSong: 0,
-      searchList: [],
+      searchList: {
+        csn: [],
+        zing: []
+      },
       songList: savedSongs || [],
       shuffleArray: [],
       isShuffle: false,
@@ -124,7 +127,10 @@ class App extends React.Component {
     let self = this;
     self.setState({ 
       isSearchInProgress: true,
-      searchList: []
+      searchList: {
+        csn: [],
+        zing: []
+      }
     });
     fetch('/search?query=' + term)
     .then((response) => {
@@ -145,11 +151,11 @@ class App extends React.Component {
     }
   }
 
-  onAddSongClick(item) {
+  onAddSongClick(item, appendPrefix) {
     let self = this;
     let song = {
-      name: item[1],
-      url: 'http://chiasenhac.vn/' + item[0],
+      name: item[1].replace('-&nbsp;', ''),
+      url: ((appendPrefix)?'http://chiasenhac.vn/':'') + item[0],
       artist: item[2]
     };
     let newSongList = self.state.songList.concat(song);
@@ -194,13 +200,24 @@ class App extends React.Component {
                   </div>
                   <div className={self.state.isSearchInProgress?"searchLoader":"searchLoader hide"}>Searching...</div>
                   <ul className="searchList">
-                    {self.state.searchList.map((searchItem, searchIndex) => {
+                    {self.state.searchList.csn.map((searchItem, searchIndex) => {
                       return (
                         <li key={`song-search-${searchIndex}`}>
-                          <button className="iconBtn entypo-plus" onClick={self.onAddSongClick.bind(self, searchItem)}></button>
+                          <button className="iconBtn entypo-plus" onClick={self.onAddSongClick.bind(self, searchItem, true)}></button>
                           <div className="songName">
                             {searchItem[1]}
                             <span>{searchItem[2]} - {searchItem[0].split('/')[0].toUpperCase()}</span>
+                          </div>
+                        </li>
+                      )
+                    })}
+                    {self.state.searchList.zing.map((searchItem, searchIndex) => {
+                      return (
+                        <li key={`song-search-${searchIndex}`}>
+                          <button className="iconBtn entypo-plus" onClick={self.onAddSongClick.bind(self, searchItem, false)}></button>
+                          <div className="songName">
+                            {searchItem[1].replace('-&nbsp;', '')}
+                            <span>{searchItem[2]}</span>
                           </div>
                         </li>
                       )

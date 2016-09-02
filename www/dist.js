@@ -21481,7 +21481,10 @@
 	      songTime: 0,
 	      isPlaying: false,
 	      currentSong: 0,
-	      searchList: [],
+	      searchList: {
+	        csn: [],
+	        zing: []
+	      },
 	      songList: savedSongs || [],
 	      shuffleArray: [],
 	      isShuffle: false,
@@ -21605,7 +21608,10 @@
 	      var self = this;
 	      self.setState({
 	        isSearchInProgress: true,
-	        searchList: []
+	        searchList: {
+	          csn: [],
+	          zing: []
+	        }
 	      });
 	      fetch('/search?query=' + term).then(function (response) {
 	        return response.json();
@@ -21626,11 +21632,11 @@
 	    }
 	  }, {
 	    key: 'onAddSongClick',
-	    value: function onAddSongClick(item) {
+	    value: function onAddSongClick(item, appendPrefix) {
 	      var self = this;
 	      var song = {
-	        name: item[1],
-	        url: 'http://chiasenhac.vn/' + item[0],
+	        name: item[1].replace('-&nbsp;', ''),
+	        url: (appendPrefix ? 'http://chiasenhac.vn/' : '') + item[0],
 	        artist: item[2]
 	      };
 	      var newSongList = self.state.songList.concat(song);
@@ -21695,11 +21701,11 @@
 	                _react2.default.createElement(
 	                  'ul',
 	                  { className: 'searchList' },
-	                  self.state.searchList.map(function (searchItem, searchIndex) {
+	                  self.state.searchList.csn.map(function (searchItem, searchIndex) {
 	                    return _react2.default.createElement(
 	                      'li',
 	                      { key: 'song-search-' + searchIndex },
-	                      _react2.default.createElement('button', { className: 'iconBtn entypo-plus', onClick: self.onAddSongClick.bind(self, searchItem) }),
+	                      _react2.default.createElement('button', { className: 'iconBtn entypo-plus', onClick: self.onAddSongClick.bind(self, searchItem, true) }),
 	                      _react2.default.createElement(
 	                        'div',
 	                        { className: 'songName' },
@@ -21710,6 +21716,23 @@
 	                          searchItem[2],
 	                          ' - ',
 	                          searchItem[0].split('/')[0].toUpperCase()
+	                        )
+	                      )
+	                    );
+	                  }),
+	                  self.state.searchList.zing.map(function (searchItem, searchIndex) {
+	                    return _react2.default.createElement(
+	                      'li',
+	                      { key: 'song-search-' + searchIndex },
+	                      _react2.default.createElement('button', { className: 'iconBtn entypo-plus', onClick: self.onAddSongClick.bind(self, searchItem, false) }),
+	                      _react2.default.createElement(
+	                        'div',
+	                        { className: 'songName' },
+	                        searchItem[1].replace('-&nbsp;', ''),
+	                        _react2.default.createElement(
+	                          'span',
+	                          null,
+	                          searchItem[2]
 	                        )
 	                      )
 	                    );
