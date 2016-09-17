@@ -2,6 +2,21 @@ import React from 'react'
 
 let musicPlayer = null;
 
+const debounce = (func, wait, immediate) => {
+  let timeout;
+  return function() {
+    let context = this, args = arguments;
+    let later = function() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    let callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -54,29 +69,32 @@ class App extends React.Component {
     let self = this;
     self.setState({ isShuffle: !self.state.isShuffle });
   }
-
+  
   nextSong(direction = 1) {
     let self = this;
-    let songIdx = self.state.currentSong;
-    if (self.state.isShuffle) {
-      if (self.state.shuffleArray.length == 0) {
-        self.state.shuffleArray = self.state.songList.map((s, i) => { return i; });
+    const limitRate = debounce(() => {
+      let songIdx = self.state.currentSong;
+      if (self.state.isShuffle) {
+        if (self.state.shuffleArray.length == 0) {
+          self.state.shuffleArray = self.state.songList.map((s, i) => { return i; });
+        }
+        let ridx = Math.floor(Math.random() * (self.state.shuffleArray.length - 1));
+        songIdx = self.state.shuffleArray[ridx];
+        let newShuffleArray = self.state.shuffleArray;
+        newShuffleArray.splice(ridx, 1);
+        self.setState({ shuffleArray: newShuffleArray });
+      } else {
+        songIdx += direction;
+        if (songIdx >= self.state.songList.length) {
+          songIdx = 0;
+        }
+        if (songIdx <= 0) {
+          songIdx = self.state.songList.length - 1;
+        }
       }
-      let ridx = Math.floor(Math.random() * (self.state.shuffleArray.length - 1));
-      songIdx = self.state.shuffleArray[ridx];
-      let newShuffleArray = self.state.shuffleArray;
-      newShuffleArray.splice(ridx, 1);
-      self.setState({ shuffleArray: newShuffleArray });
-    } else {
-      songIdx += direction;
-      if (songIdx >= self.state.songList.length) {
-        songIdx = 0;
-      }
-      if (songIdx <= 0) {
-        songIdx = self.state.songList.length - 1;
-      }
-    }
-    self.onPlayClick(songIdx);
+      self.onPlayClick(songIdx);
+    }, 250);
+    limitRate();
   }
 
   prevSong() {
@@ -138,12 +156,9 @@ class App extends React.Component {
     })
     .then((data) => { 
       let contentArray = data.content;
-      if (!contentArray) {
-        contentArray = {
-          csn: [],
-          zing: []
-        }
-      }
+      if (!contentArray) contentArray = {};
+      if (!contentArray.csn) contentArray.csn = [];
+      if (!contentArray.zing) contentArray.zing = [];
       self.setState({ 
         isSearchInProgress: false,
         searchList: contentArray
