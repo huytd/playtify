@@ -137,9 +137,16 @@ class App extends React.Component {
       return response.json()
     })
     .then((data) => { 
+      let contentArray = data.content;
+      if (!contentArray) {
+        contentArray = {
+          csn: [],
+          zing: []
+        }
+      }
       self.setState({ 
         isSearchInProgress: false,
-        searchList: data.content 
+        searchList: contentArray
       });
     });
   }
